@@ -1,0 +1,27 @@
+######
+# Authors: Alessandro Oggioni
+# Porpose: Create a vector layer in QGis from SOS
+# Licence: GNU/GPL
+# Usage: download this script and use this.
+# Version: 1.0
+######
+
+##[LTER]=group
+##procedure=string Air_Temp
+##sos_layer=output vector
+library("spatstat")
+library("maptools")
+library("sp")
+library("sos4R")
+lter_sos=SOS("http://192.168.0.9:8080/SOS/sos")
+lter_sos.offerings=sosOfferings(lter_sos)
+lter_sos.request=getObservation(sos = lter_sos,
+                                  offering = lter_sos.offerings[[procedure]],
+                                  procedure = sosProcedures(lter_sos.offerings[[procedure]])
+                                  )
+lter_sos.result=sosResult(lter_sos.request)
+lter_sos.coords=sosCoordinates(lter_sos.request)
+lter_sos.data=merge(x = lter_sos.result, y = lter_sos.coords, by.x = 'FeatureOfInterest', by.y = 'feature')
+xy=lter_sos.data[5:4]
+df=lter_sos.data[-4:-5]
+sos_layer=SpatialPointsDataFrame(coords=xy, data=df)
