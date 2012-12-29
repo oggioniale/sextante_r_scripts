@@ -1,17 +1,15 @@
-##[LTER]=group
+##[WebService]=group
 ##procedure=string Air_Temp
 ##sos_layer=output vector
 ##showplots
 library("sos4R")
 library("ggplot2")
-lter_sos=SOS("http://192.168.0.12:8080/SOS/sos")
-lter_sos.offerings=sosOfferings(lter_sos)
-lter_sos.request=getObservation(sos = lter_sos,
-                                offering = procedure)
-lter_sos.result=sosResult(lter_sos.request)
-lter_sos.coords=sosCoordinates(lter_sos.request)
-lter_sos.data=merge(x = lter_sos.result, y = lter_sos.coords, by.x = 'FeatureOfInterest', by.y = 'feature')
-xy=lter_sos.data[5:4]
-df=lter_sos.data[-4:-5]
+sos=SOS("http://192.168.0.12:8080/SOS/sos")
+sos.request=getObservation(sos = sos, offering = procedure)
+sos.result=sosResult(sos.request)
+sos.coords=sosCoordinates(sos.request)
+sos.data=merge(x = sos.result, y = sos.coords, by.x = 'FeatureOfInterest', by.y = 'feature')
+xy=sos.data[5:4]
+df=sos.data[-4:-5]
 sos_layer=SpatialPointsDataFrame(coords=xy, data=df)
-ggplot(lter_sos.data, aes(x = SamplingTime, y = AirTempMontly, colour = FeatureOfInterest)) + geom_line(size=0.4) + theme(legend.title = element_text(colour="black", size=12, face="bold"))
+ggplot(sos.data, aes(x = SamplingTime, y = AirTempMontly, colour = FeatureOfInterest)) + geom_line(size=0.4) + theme(legend.title = element_text(colour="black", size=12, face="bold"))
