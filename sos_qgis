@@ -4,12 +4,17 @@
 ##showplots
 library("sos4R")
 library("ggplot2")
-sos=SOS("http://155.253.20.84:8080/SOS/sos")
-sos.request=getObservation(sos = sos, offering = procedure)
-sos.result=sosResult(sos.request)
-sos.coords=sosCoordinates(sos.request)
-sos.data=merge(x = sos.result, y = sos.coords, by.x = 'FeatureOfInterest', by.y = 'feature')
-xy=sos.data[5:4]
-df=sos.data[-4:-5]
+lter_sos=SOS("http://sos.ise.cnr.it/sos")
+lter_sos.offerings=sosOfferings(lter_sos)
+offerings=names(lter_sos.offerings)
+lter_sos.request=getObservation(sos = lter_sos,
+                                offering = procedure)
+lter_sos.result=sosResult(lter_sos.request)
+lter_sos.coords=sosCoordinates(lter_sos.request)
+lter_sos.data=merge(x = lter_sos.result, y = lter_sos.coords, by.x = 'feature', by.y = 'feature')
+lter_sos.data=subset(lter_sos.data, feature != 'Pallanza_air_temp')
+colnames(lter_sos.data)[3] <- "prop"
+xy=lter_sos.data[5:4]
+df=lter_sos.data[-4:-5]
 sos_layer=SpatialPointsDataFrame(coords=xy, data=df)
-ggplot(sos.data, aes(x = SamplingTime, y = AirTempMontly, colour = FeatureOfInterest)) + geom_line(size=0.4) + theme(legend.title = element_text(colour="black", size=12, face="bold"))
+ggplot(lter_sos.data, aes(x = Time, y = prop, colour = feature)) + geom_line(size=0.4) + theme(legend.title = element_text(colour="black", size=12, face="bold"))
