@@ -4,7 +4,7 @@
 ##showplots
 library("sos4R")
 library("ggplot2")
-sos=SOS("http://192.168.0.12:8080/SOS/sos")
+sos=SOS("http://155.253.20.84:8080/SOS/sos")
 sos.request=getObservation(sos = sos, offering = procedure)
 sos.result=sosResult(sos.request)
 sos.coords=sosCoordinates(sos.request)
